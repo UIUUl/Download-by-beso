@@ -2,17 +2,27 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>مستعرض فيديوهات يوتيوب الذكي</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Beso Studio | مستعرض يوتيوب الاحترافي</title>
   <style>
     :root {
-      --bg: #0f1117;
-      --card: #181b24;
-      --border: #2a2f3e;
-      --accent: #ff2e4c;
-      --accent-hover: #e0203c;
-      --text: #f3f4f6;
-      --muted: #9ca3af;
+      --bg-main: #06070a;
+      --bg-card: rgba(17, 20, 29, 0.82);
+      --bg-input: #0b0d13;
+      --border: rgba(255, 255, 255, 0.08);
+      --accent: #ff1e42;
+      --accent-hover: #e01536;
+      --accent-glow: rgba(255, 30, 66, 0.28);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --radius-lg: 22px;
+      --radius-md: 14px;
+    }
+
+    body.theme-blue {
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-glow: rgba(37, 99, 235, 0.32);
     }
 
     * {
@@ -20,248 +30,716 @@
       margin: 0;
       padding: 0;
       font-family: system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      background: radial-gradient(circle at top, #1f1625 0%, var(--bg) 55%);
-      color: var(--text);
+      background-color: var(--bg-main);
+      background-image:
+        radial-gradient(circle at 50% -10%, var(--accent-glow), transparent 55%),
+        radial-gradient(circle at 85% 90%, rgba(255, 255, 255, 0.03), transparent 40%);
+      color: var(--text-main);
       min-height: 100vh;
+      padding: 20px 16px 60px;
+      transition: background 0.4s ease;
+    }
+
+    .app-wrapper {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    /* الهيدر العلوي */
+    .topbar {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      padding: 24px;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 720px;
-      background: var(--card);
+      margin-bottom: 22px;
+      padding: 12px 18px;
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 32px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
     }
 
-    header {
-      text-align: center;
-      margin-bottom: 28px;
-    }
-
-    header h1 {
-      font-size: 1.8rem;
-      margin-bottom: 8px;
-    }
-
-    header p {
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .input-group {
+    .brand {
       display: flex;
+      align-items: center;
       gap: 10px;
-      margin-bottom: 16px;
     }
 
-    input[type="text"] {
-      flex: 1;
-      padding: 14px 16px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: #10131a;
-      color: var(--text);
-      font-size: 1rem;
-      outline: none;
-      transition: border-color 0.2s;
-      direction: ltr;
-    }
-
-    input[type="text"]:focus {
-      border-color: var(--accent);
-    }
-
-    button {
-      padding: 14px 22px;
-      border: none;
-      border-radius: 12px;
+    .brand-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
       background: var(--accent);
-      color: #fff;
-      font-size: 1rem;
+      box-shadow: 0 0 14px var(--accent);
+      transition: 0.3s;
+    }
+
+    .brand h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .theme-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.82rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.25s;
     }
 
-    button:hover {
+    .theme-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* البطاقة الرئيسية */
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      margin-bottom: 18px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
+    }
+
+    .input-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 15px 16px 15px 44px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--bg-input);
+      color: var(--text-main);
+      font-size: 0.95rem;
+      outline: none;
+      direction: ltr;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .input-box input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .clear-btn {
+      position: absolute;
+      left: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: var(--text-muted);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .actions-row {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 13px 16px;
+      border-radius: var(--radius-md);
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.15s, background 0.25s, box-shadow 0.25s;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 6px 20px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
       background: var(--accent-hover);
     }
 
-    button:active {
-      transform: scale(0.98);
-    }
-
-    .error {
-      color: #ff6b81;
-      font-size: 0.9rem;
-      margin-bottom: 16px;
+    .error-banner {
       display: none;
+      margin-top: 12px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      background: rgba(255, 30, 66, 0.12);
+      border: 1px solid rgba(255, 30, 66, 0.35);
+      color: #ff8fa3;
+      font-size: 0.88rem;
+      text-align: center;
     }
 
-    .result {
+    /* قسم النتيجة والمشغل */
+    .result-section {
       display: none;
-      margin-top: 24px;
-      animation: fadeIn 0.35s ease;
+      animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(14px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .video-wrapper {
+    .player-frame {
       position: relative;
-      padding-bottom: 56.25%; /* نسبة 16:9 */
+      padding-bottom: 56.25%;
       height: 0;
       overflow: hidden;
-      border-radius: 14px;
+      border-radius: var(--radius-md);
       border: 1px solid var(--border);
-      margin-bottom: 20px;
+      background: #000;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65);
+      margin-bottom: 18px;
     }
 
-    .video-wrapper iframe {
+    .player-frame iframe {
       position: absolute;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100%;
       height: 100%;
       border: 0;
     }
 
-    .info-box {
-      background: #10131a;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px;
+    /* لوحة التحكم السلسة */
+    .section-title {
+      font-size: 0.9rem;
+      color: var(--text-muted);
       margin-bottom: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
-    .info-box label {
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .control-item {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+    }
+
+    .time-inputs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      direction: ltr;
+    }
+
+    .time-inputs input {
+      width: 42px;
+      padding: 5px;
+      text-align: center;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    /* مفتاح التبديل Switch */
+    .switch {
+      position: relative;
+      width: 42px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      transition: 0.3s;
+    }
+
+    .slider::before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #fff;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+
+    input:checked + .slider {
+      background-color: var(--accent);
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    input:checked + .slider::before {
+      transform: translateX(18px);
+    }
+
+    /* بطاقة الصورة المصغرة */
+    .thumb-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px;
+      margin-bottom: 14px;
+    }
+
+    .thumb-card img {
+      width: 96px;
+      height: 54px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .thumb-info {
+      flex: 1;
+    }
+
+    .thumb-info span {
       display: block;
       font-size: 0.85rem;
-      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .thumb-link {
+      display: inline-block;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* صناديق النسخ */
+    .copy-box {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .copy-box label {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--text-muted);
       margin-bottom: 6px;
     }
 
-    .copy-row {
+    .copy-flex {
       display: flex;
-      gap: 10px;
       align-items: center;
+      gap: 8px;
     }
 
-    .copy-row code {
+    .copy-flex code {
       flex: 1;
       font-family: monospace;
-      font-size: 0.85rem;
-      color: #d1d5db;
+      font-size: 0.82rem;
+      color: #e2e8f0;
       overflow-x: auto;
       white-space: nowrap;
       direction: ltr;
       text-align: left;
+      padding: 4px 0;
     }
 
-    .copy-btn {
-      padding: 8px 14px;
+    .mini-copy {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 7px 12px;
+      border-radius: 9px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .mini-copy:active {
+      background: var(--accent);
+    }
+
+    /* سجل المشاهدة */
+    .history-list {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+
+    .history-item {
+      flex: 0 0 120px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .history-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .history-item img {
+      width: 100%;
+      height: 68px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .history-item span {
+      display: block;
+      padding: 6px;
+      font-size: 0.72rem;
+      font-family: monospace;
+      color: var(--text-muted);
+      text-align: center;
+      direction: ltr;
+    }
+
+    .clear-history {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+
+    /* إشعار Toast */
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #181c28;
+      color: #fff;
+      border: 1px solid var(--accent);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+      padding: 10px 20px;
+      border-radius: 999px;
       font-size: 0.85rem;
-      background: #2a2f3e;
+      font-weight: 600;
+      opacity: 0;
+      transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 999;
+      pointer-events: none;
     }
 
-    .copy-btn:hover {
-      background: #3b4257;
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
-    @media (max-width: 550px) {
-      .input-group {
-        flex-direction: column;
+    @media (max-width: 520px) {
+      .controls-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <header>
-      <h1>مستعرض فيديوهات يوتيوب</h1>
-      <p>الصق رابط أي مقطع يوتيوب لتشغيله فوراً والحصول على كود التضمين الخاص به</p>
+  <div class="app-wrapper">
+    <!-- الهيدر -->
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <h1>Beso Studio</h1>
+      </div>
+      <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">
+        تبديل اللون
+      </button>
     </header>
 
-    <div class="input-group">
-      <input type="text" id="urlInput" placeholder="https://www.youtube.com/watch?v=..." />
-      <button onclick="loadVideo()">عرض الفيديو</button>
-    </div>
-
-    <div id="errorMsg" class="error">الرابط غير صحيح، تأكد من نسخ رابط يوتيوب سليم.</div>
-
-    <div id="resultBox" class="result">
-      <div class="video-wrapper">
-        <iframe id="ytPlayer" allowfullscreen></iframe>
+    <!-- صندوق الإدخال -->
+    <section class="card">
+      <div class="input-box">
+        <input type="text" id="urlInput" placeholder="https://youtu.be/..." oninput="toggleClearBtn()" />
+        <button class="clear-btn" id="clearBtn" onclick="clearInput()">✕</button>
       </div>
 
-      <div class="info-box">
-        <label>معرّف الفيديو (Video ID):</label>
-        <div class="copy-row">
-          <code id="videoIdText"></code>
-          <button class="copy-btn" onclick="copyText('videoIdText', this)">نسخ</button>
+      <div class="actions-row">
+        <button class="btn btn-secondary" onclick="pasteFromClipboard()">لصق الرابط</button>
+        <button class="btn btn-primary" onclick="processVideo()">تشغيل ومعاينة</button>
+      </div>
+
+      <div id="errorBanner" class="error-banner">
+        الرابط غير صالح — تأكد من نسخ رابط مقطع يوتيوب صحيح.
+      </div>
+    </section>
+
+    <!-- قسم المشغل والتحكم -->
+    <section id="resultSection" class="card result-section">
+      <div class="player-frame">
+        <iframe id="ytIframe" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+
+      <div class="section-title">
+        <span>لوحة التحكم بالتضمين</span>
+      </div>
+
+      <div class="controls-grid">
+        <div class="control-item">
+          <span>بدء التشغيل من (د : ث)</span>
+          <div class="time-inputs">
+            <input type="number" id="startMin" min="0" placeholder="00" onchange="updatePlayer()" />
+            <span>:</span>
+            <input type="number" id="startSec" min="0" max="59" placeholder="00" onchange="updatePlayer()" />
+          </div>
+        </div>
+
+        <div class="control-item">
+          <span>تكرار المقطع تلقائياً</span>
+          <label class="switch">
+            <input type="checkbox" id="loopToggle" onchange="updatePlayer()" />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="control-item">
+          <span>تشغيل تلقائي (Autoplay)</span>
+          <label class="switch">
+            <input type="checkbox" id="autoplayToggle" onchange="updatePlayer()" />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="control-item">
+          <span>وضع الخصوصية (No-Cookie)</span>
+          <label class="switch">
+            <input type="checkbox" id="privacyToggle" checked onchange="updatePlayer()" />
+            <span class="slider"></span>
+          </label>
         </div>
       </div>
 
-      <div class="info-box">
-        <label>كود التضمين لموقعك (Embed HTML):</label>
-        <div class="copy-row">
-          <code id="embedCodeText"></code>
-          <button class="copy-btn" onclick="copyText('embedCodeText', this)">نسخ</button>
+      <!-- الصورة المصغرة -->
+      <div class="thumb-card">
+        <img id="thumbImg" alt="غلاف الفيديو" />
+        <div class="thumb-info">
+          <span>غلاف المقطع (Thumbnail HD)</span>
+          <a id="thumbOpenLink" href="#" target="_blank" class="thumb-link">فتح الغلاف بأعلى جودة ↗</a>
         </div>
       </div>
-    </div>
+
+      <!-- أكواد النسخ -->
+      <div class="copy-box">
+        <label>معرّف المقطع (Video ID):</label>
+        <div class="copy-flex">
+          <code id="idCode"></code>
+          <button class="mini-copy" onclick="copyValue('idCode')">نسخ</button>
+        </div>
+      </div>
+
+      <div class="copy-box">
+        <label>كود التضمين المخصص (Embed HTML):</label>
+        <div class="copy-flex">
+          <code id="embedCode"></code>
+          <button class="mini-copy" onclick="copyValue('embedCode')">نسخ الكود</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- سجل المقاطع الأخيرة -->
+    <section id="historyCard" class="card" style="display: none;">
+      <div class="section-title">
+        <span>آخر المقاطع المشغّلة</span>
+        <button class="clear-history" onclick="clearHistory()">مسح السجل</button>
+      </div>
+      <div class="history-list" id="historyList"></div>
+    </section>
   </div>
 
+  <div id="toast" class="toast"></div>
+
   <script>
+    let currentVideoId = null;
+
+    // استعادة الثيم المحفوظ
+    if (localStorage.getItem("beso_theme") === "blue") {
+      document.body.classList.add("theme-blue");
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("theme-blue");
+      const isBlue = document.body.classList.contains("theme-blue");
+      localStorage.setItem("beso_theme", isBlue ? "blue" : "red");
+      showToast(isBlue ? "تم التبديل إلى الأزرق الملكي" : "تم التبديل إلى الأحمر الناري");
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.classList.add("show");
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+    }
+
+    function toggleClearBtn() {
+      const val = document.getElementById("urlInput").value;
+      document.getElementById("clearBtn").style.display = val ? "flex" : "none";
+    }
+
+    function clearInput() {
+      const input = document.getElementById("urlInput");
+      input.value = "";
+      toggleClearBtn();
+      input.focus();
+    }
+
+    async function pasteFromClipboard() {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          document.getElementById("urlInput").value = text.trim();
+          toggleClearBtn();
+          processVideo();
+        } else {
+          showToast("الحافظة فارغة");
+        }
+      } catch (err) {
+        const input = document.getElementById("urlInput");
+        input.focus();
+        showToast("اضغط مطولاً داخل الخانة واختر لصق");
+      }
+    }
+
     function extractVideoId(url) {
-      const regex = /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+      const regex = /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
       const match = url.match(regex);
       return match ? match[1] : null;
     }
 
-    function loadVideo() {
-      const input = document.getElementById("urlInput").value.trim();
-      const errorMsg = document.getElementById("errorMsg");
-      const resultBox = document.getElementById("resultBox");
-      const videoId = extractVideoId(input);
+    function processVideo() {
+      const rawUrl = document.getElementById("urlInput").value.trim();
+      const errorBanner = document.getElementById("errorBanner");
+      const videoId = extractVideoId(rawUrl);
 
       if (!videoId) {
-        errorMsg.style.display = "block";
-        resultBox.style.display = "none";
+        errorBanner.style.display = "block";
         return;
       }
 
-      errorMsg.style.display = "none";
-      const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-      document.getElementById("ytPlayer").src = embedUrl;
-      document.getElementById("videoIdText").textContent = videoId;
-      document.getElementById("embedCodeText").textContent =
-        `<iframe width="560" height="315" src="${embedUrl}" frameborder="0" allowfullscreen></iframe>`;
+      errorBanner.style.display = "none";
+      currentVideoId = videoId;
 
-      resultBox.style.display = "block";
+      // تحديث الغلاف
+      const thumbImg = document.getElementById("thumbImg");
+      const maxRes = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
+      const hqRes = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+      thumbImg.src = maxRes;
+      thumbImg.onerror = () => { thumbImg.src = hqRes; };
+      document.getElementById("thumbOpenLink").href = maxRes;
+
+      document.getElementById("idCode").textContent = videoId;
+      document.getElementById("resultSection").style.display = "block";
+
+      updatePlayer();
+      saveToHistory(videoId);
     }
 
-    function copyText(elementId, btn) {
+    function updatePlayer() {
+      if (!currentVideoId) return;
+
+      const mins = parseInt(document.getElementById("startMin").value) || 0;
+      const secs = parseInt(document.getElementById("startSec").value) || 0;
+      const totalStart = mins * 60 + secs;
+
+      const isLoop = document.getElementById("loopToggle").checked;
+      const isAutoplay = document.getElementById("autoplayToggle").checked;
+      const isPrivacy = document.getElementById("privacyToggle").checked;
+
+      const domain = isPrivacy ? "https://www.youtube-nocookie.com" : "https://www.youtube.com";
+      const params = new URLSearchParams();
+
+      if (totalStart > 0) params.set("start", totalStart);
+      if (isAutoplay) params.set("autoplay", "1");
+      if (isLoop) {
+        params.set("loop", "1");
+        params.set("playlist", currentVideoId);
+      }
+
+      const queryString = params.toString();
+      const finalUrl = `${domain}/embed/${currentVideoId}${queryString ? "?" + queryString : ""}`;
+
+      document.getElementById("ytIframe").src = finalUrl;
+      document.getElementById("embedCode").textContent =
+        `<iframe width="560" height="315" src="${finalUrl}" frameborder="0" allowfullscreen></iframe>`;
+    }
+
+    function copyValue(elementId) {
       const text = document.getElementById(elementId).textContent;
       navigator.clipboard.writeText(text).then(() => {
-        const original = btn.textContent;
-        btn.textContent = "تم النسخ!";
-        setTimeout(() => (btn.textContent = original), 1500);
+        showToast("تم النسخ إلى الحافظة!");
       });
     }
-  </script>
-</body>
-</html>
 
+    function saveToHistory(id) {
+      let history = JSON.parse(localStorage.getItem("beso_yt_history") || "[]");
+      history = history.filter(item => item !== id);
+      history.unshift(id);
+      if (history.length > 6) history.pop();
+      localStorage.setItem("beso_yt_history", JSON
